@@ -9,8 +9,10 @@ Please read the [API documentation here](https://docs.rs/permutohedron/)
 
 How to use with cargo:
 
-    [dependencies]
-    permutohedron = "0.2"
+```toml
+[dependencies]
+permutohedron = "0.2"
+```
 
 ## Recent Changes
 
