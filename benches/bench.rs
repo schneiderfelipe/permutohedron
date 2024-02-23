@@ -2,12 +2,9 @@
 extern crate permutohedron;
 extern crate test;
 
-use test::{Bencher, black_box};
+use test::{black_box, Bencher};
 
-use permutohedron::{
-    Heap,
-    heap_recursive,
-};
+use permutohedron::{heap_recursive, Heap};
 
 #[bench]
 fn heap_iterative_7(b: &mut Bencher) {

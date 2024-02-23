@@ -3,11 +3,13 @@
 macro_rules! try_control {
     ($e:expr) => {
         match $e {
-            x => if x.should_break() {
-                return x;
+            x => {
+                if x.should_break() {
+                    return x;
+                }
             }
         }
-    }
+    };
 }
 
 /// Control flow for callbacks.
@@ -20,7 +22,9 @@ pub enum Control<B> {
 }
 
 impl<B> Control<B> {
-    pub fn breaking() -> Control<()> { Control::Break(()) }
+    pub fn breaking() -> Control<()> {
+        Control::Break(())
+    }
     /// Get the value in `Control::Break(_)`, if present.
     pub fn break_value(self) -> Option<B> {
         match self {
@@ -36,23 +40,37 @@ impl<B> Control<B> {
 pub trait ControlFlow {
     fn continuing() -> Self;
     #[inline]
-    fn should_break(&self) -> bool { false }
+    fn should_break(&self) -> bool {
+        false
+    }
 }
 
 impl ControlFlow for () {
-    fn continuing() { }
+    fn continuing() {}
 }
 
 impl<B> ControlFlow for Control<B> {
-    fn continuing() -> Self { Control::Continue }
+    fn continuing() -> Self {
+        Control::Continue
+    }
     fn should_break(&self) -> bool {
-        if let Control::Break(_) = *self { true } else { false }
+        if let Control::Break(_) = *self {
+            true
+        } else {
+            false
+        }
     }
 }
 
 impl<E> ControlFlow for Result<(), E> {
-    fn continuing() -> Self { Ok(()) }
+    fn continuing() -> Self {
+        Ok(())
+    }
     fn should_break(&self) -> bool {
-        if let Err(_) = *self { true } else { false }
+        if let Err(_) = *self {
+            true
+        } else {
+            false
+        }
     }
 }
