@@ -28,6 +28,7 @@
 /// // `data` has been mutated in-place:
 /// assert_eq!(data, [3, 2, 1]);
 /// ```
+#[allow(clippy::module_name_repetitions)]
 pub trait LexicalPermutation {
     /// Return `true` if the slice was permuted, `false` if it is already
     /// at the last ordered permutation.

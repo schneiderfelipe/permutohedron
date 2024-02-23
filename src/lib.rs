@@ -130,13 +130,14 @@ pub struct Heap<'a, Data: 'a + ?Sized, T: 'a> {
     _element: PhantomData<&'a mut T>,
 }
 
-impl<'a, T, Data: ?Sized> Heap<'a, Data, T>
+impl<'a, T, Data> Heap<'a, Data, T>
 where
-    Data: AsMut<[T]>,
+    Data: ?Sized + AsMut<[T]>,
 {
     /// Create a new `Heap`.
     ///
-    /// ***Panics*** if the number of elements is too large (see `MAXHEAP`)
+    /// # Panics
+    /// If the number of elements is too large (see `MAXHEAP`).
     ///
     /// The `heap_recursive` function has no length limit, but
     /// note that for *n* elements there are *n!* (*n* factorial) permutations,
@@ -183,7 +184,9 @@ where
             Some(self.data)
         } else {
             while 1 + (self.n as usize) < self.data.as_mut().len() {
+                #[allow(clippy::cast_possible_truncation)]
                 let n = self.n as u8;
+
                 let nu = self.n as usize;
                 let c = &mut self.c;
                 if c[nu] <= n {
@@ -194,10 +197,9 @@ where
                     c[nu] += 1;
                     self.n = 0;
                     return Some(self.data);
-                } else {
-                    c[nu] = 0;
-                    self.n += 1;
                 }
+                c[nu] = 0;
+                self.n += 1;
             }
             None
         }
@@ -209,9 +211,9 @@ where
 ///
 /// **Note:** You can also generate the permutations lazily by using
 /// `.next_permutation()`.
-impl<'a, Data: ?Sized, T> Iterator for Heap<'a, Data, T>
+impl<'a, Data, T> Iterator for Heap<'a, Data, T>
 where
-    Data: AsMut<[T]> + ToOwned,
+    Data: ?Sized + AsMut<[T]> + ToOwned,
 {
     type Item = Data::Owned;
     fn next(&mut self) -> Option<Self::Item> {
@@ -222,7 +224,7 @@ where
 /// Compute *n!* (*n* factorial)
 #[must_use]
 pub fn factorial(n: usize) -> usize {
-    (1..n + 1).product::<usize>()
+    (1..=n).product::<usize>()
 }
 
 #[cfg(all(test, feature = "std"))]
@@ -268,7 +270,7 @@ mod tests {
             assert!(permutations.iter().all(|perm| perm.len() == n));
             assert!(permutations
                 .iter()
-                .all(|perm| (1..n + 1).all(|i| perm.iter().any(|elt| *elt == i))));
+                .all(|perm| (1..=n).all(|i| perm.iter().any(|elt| *elt == i))));
         }
     }
 
@@ -318,7 +320,7 @@ mod tests {
             assert!(permutations.iter().all(|perm| perm.len() == n));
             assert!(permutations
                 .iter()
-                .all(|perm| (1..n + 1).all(|i| perm.iter().any(|elt| *elt == i))));
+                .all(|perm| (1..=n).all(|i| perm.iter().any(|elt| *elt == i))));
         }
     }
 

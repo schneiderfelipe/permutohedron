@@ -23,7 +23,7 @@ pub enum Control<B> {
 
 impl<B> Control<B> {
     #[must_use]
-    pub fn breaking() -> Control<()> {
+    pub const fn breaking() -> Control<()> {
         Control::Break(())
     }
     /// Get the value in `Control::Break(_)`, if present.
@@ -38,6 +38,7 @@ impl<B> Control<B> {
 /// Control flow for callbacks.
 ///
 /// The empty return value `()` is equivalent to continue.
+#[allow(clippy::module_name_repetitions)]
 pub trait ControlFlow {
     fn continuing() -> Self;
     #[inline]
@@ -55,11 +56,7 @@ impl<B> ControlFlow for Control<B> {
         Self::Continue
     }
     fn should_break(&self) -> bool {
-        if let Self::Break(_) = *self {
-            true
-        } else {
-            false
-        }
+        matches!(self, Self::Break(_))
     }
 }
 
@@ -68,10 +65,6 @@ impl<E> ControlFlow for Result<(), E> {
         Ok(())
     }
     fn should_break(&self) -> bool {
-        if let Err(_) = *self {
-            true
-        } else {
-            false
-        }
+        self.is_err()
     }
 }
