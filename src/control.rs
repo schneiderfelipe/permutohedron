@@ -22,14 +22,15 @@ pub enum Control<B> {
 }
 
 impl<B> Control<B> {
+    #[must_use]
     pub fn breaking() -> Control<()> {
         Control::Break(())
     }
     /// Get the value in `Control::Break(_)`, if present.
     pub fn break_value(self) -> Option<B> {
         match self {
-            Control::Continue => None,
-            Control::Break(b) => Some(b),
+            Self::Continue => None,
+            Self::Break(b) => Some(b),
         }
     }
 }
@@ -51,10 +52,10 @@ impl ControlFlow for () {
 
 impl<B> ControlFlow for Control<B> {
     fn continuing() -> Self {
-        Control::Continue
+        Self::Continue
     }
     fn should_break(&self) -> bool {
-        if let Control::Break(_) = *self {
+        if let Self::Break(_) = *self {
             true
         } else {
             false

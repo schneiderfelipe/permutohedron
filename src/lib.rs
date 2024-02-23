@@ -152,6 +152,7 @@ where
     }
 
     /// Return a reference to the inner data
+    #[must_use]
     pub fn get(&self) -> &Data {
         self.data
     }
@@ -214,16 +215,14 @@ where
 {
     type Item = Data::Owned;
     fn next(&mut self) -> Option<Self::Item> {
-        match self.next_permutation() {
-            None => None,
-            Some(perm) => Some(perm.to_owned()),
-        }
+        self.next_permutation().map(|perm| perm.to_owned())
     }
 }
 
 /// Compute *n!* (*n* factorial)
+#[must_use]
 pub fn factorial(n: usize) -> usize {
-    (1..n + 1).fold(1, |a, b| a * b)
+    (1..n + 1).product::<usize>()
 }
 
 #[cfg(all(test, feature = "std"))]
@@ -269,34 +268,34 @@ mod tests {
             assert!(permutations.iter().all(|perm| perm.len() == n));
             assert!(permutations
                 .iter()
-                .all(|perm| (1..n + 1).all(|i| perm.iter().position(|elt| *elt == i).is_some())));
+                .all(|perm| (1..n + 1).all(|i| perm.iter().any(|elt| *elt == i))));
         }
     }
 
     #[test]
     fn count_permutations_iter() {
         let mut data = [0; 10];
-        for n in 0..data.len() + 1 {
+        for n in 0..=data.len() {
             let count = factorial(n);
             let mut permutations = Heap::new(&mut data[..n]);
             let mut i = 0;
-            while let Some(_) = permutations.next_permutation() {
+            while permutations.next_permutation().is_some() {
                 i += 1;
             }
             assert_eq!(i, count);
-            println!("{}! = {} ok", n, count);
+            println!("{n}! = {count} ok");
         }
     }
 
     #[test]
     fn count_permutations_recur() {
         let mut data = [0; 10];
-        for n in 0..data.len() + 1 {
+        for n in 0..=data.len() {
             let count = factorial(n);
             let mut i = 0;
             heap_recursive(&mut data[..n], |_| i += 1);
             assert_eq!(i, count);
-            println!("{}! = {} ok", n, count);
+            println!("{n}! = {count} ok");
         }
     }
 
@@ -310,7 +309,7 @@ mod tests {
             }
             let mut permutations = Vec::with_capacity(count);
             heap_recursive(&mut data[..n], |elt| permutations.push(elt.to_owned()));
-            println!("{:?}", permutations);
+            println!("{permutations:?}");
             assert_eq!(permutations.len(), count);
             permutations.sort();
             permutations.dedup();
@@ -319,7 +318,7 @@ mod tests {
             assert!(permutations.iter().all(|perm| perm.len() == n));
             assert!(permutations
                 .iter()
-                .all(|perm| (1..n + 1).all(|i| perm.iter().position(|elt| *elt == i).is_some())));
+                .all(|perm| (1..n + 1).all(|i| perm.iter().any(|elt| *elt == i))));
         }
     }
 
