@@ -11,13 +11,13 @@ extern crate core as std;
 
 use std::marker::PhantomData;
 
-pub use lexical::LexicalPermutation;
+pub use crate::lexical::LexicalPermutation;
 
 mod lexical;
 #[macro_use]
 pub mod control;
 
-use control::ControlFlow;
+use crate::control::ControlFlow;
 
 /// Heap's algorithm for generating permutations, recursive version.
 ///
@@ -230,7 +230,7 @@ pub fn factorial(n: usize) -> usize {
 #[cfg(all(test, feature = "std"))]
 mod tests {
     use super::*;
-    use control::Control;
+    use crate::control::Control;
 
     #[test]
     fn first_and_reset() {
