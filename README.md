@@ -11,11 +11,13 @@ How to use with cargo:
 
 ```toml
 [dependencies]
-permutohedron = "0.2"
+permutohedron = "0.3"
 ```
 
 ## Recent Changes
 
+- 0.3.0
+  - Update to Rust 2021 Edition and solve some Cargo warnings
 - 0.2.4
   - Document a panic case in `Heap::new` that was not mentioned before
 - 0.2.3

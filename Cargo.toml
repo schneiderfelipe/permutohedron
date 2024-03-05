@@ -1,6 +1,6 @@
 [package]
 name = "permutohedron"
-version = "0.2.4"
+version = "0.3.0"
 authors = ["bluss"]
 edition = "2021"
 
