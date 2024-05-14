@@ -3,7 +3,7 @@
 macro_rules! try_control {
     ($e:expr) => {
         let x = $e;
-        if x.should_break() {
+        if x.is_break() {
             return x;
         }
     };
@@ -15,7 +15,7 @@ macro_rules! try_control {
 #[allow(clippy::module_name_repetitions)]
 pub trait ControlFlow {
     #[inline]
-    fn should_break(&self) -> bool {
+    fn is_break(&self) -> bool {
         false
     }
 }
@@ -23,13 +23,13 @@ pub trait ControlFlow {
 impl ControlFlow for () {}
 
 impl<B> ControlFlow for std::ops::ControlFlow<B, ()> {
-    fn should_break(&self) -> bool {
+    fn is_break(&self) -> bool {
         matches!(self, Self::Break(_))
     }
 }
 
 impl<E> ControlFlow for Result<(), E> {
-    fn should_break(&self) -> bool {
+    fn is_break(&self) -> bool {
         self.is_err()
     }
 }
