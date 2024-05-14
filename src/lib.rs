@@ -26,8 +26,8 @@ use crate::control::ControlFlow;
 /// a bit faster than the iterative version.
 ///
 /// The closure `f` may return either `()` to simply run through all
-/// permutations, or a [`std::ops::ControlFlow<B, ()>`] value that permits
-/// breaking the iteration early.
+/// permutations, or a [`std::ops::ControlFlow<B, ()>`](std::ops::ControlFlow)
+/// value that permits breaking the iteration early.
 ///
 /// ```
 /// use permutohedron::heap_recursive;
