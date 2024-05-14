@@ -2,12 +2,9 @@
 
 macro_rules! try_control {
     ($e:expr) => {
-        match $e {
-            x => {
-                if x.should_break() {
-                    return x;
-                }
-            }
+        let x = $e;
+        if x.should_break() {
+            return x;
         }
     };
 }
