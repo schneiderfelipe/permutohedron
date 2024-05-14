@@ -26,8 +26,8 @@ use crate::control::ControlFlow;
 /// a bit faster than the iterative version.
 ///
 /// The closure `f` may return either `()` to simply run through all
-/// permutations, or a `Control` value that permits breaking the
-/// iteration early.
+/// permutations, or a [`std::ops::ControlFlow<B, ()>`] value that permits
+/// breaking the iteration early.
 ///
 /// ```
 /// use permutohedron::heap_recursive;
@@ -230,7 +230,6 @@ pub fn factorial(n: usize) -> usize {
 #[cfg(all(test, feature = "std"))]
 mod tests {
     use super::*;
-    use crate::control::Control;
 
     #[test]
     fn first_and_reset() {
@@ -331,9 +330,9 @@ mod tests {
         heap_recursive(&mut data, |_perm| {
             i += 1;
             if i >= 10_000 {
-                Control::Break(i)
+                std::ops::ControlFlow::Break(i)
             } else {
-                Control::Continue
+                std::ops::ControlFlow::Continue(())
             }
         });
         assert_eq!(i, 10_000);
